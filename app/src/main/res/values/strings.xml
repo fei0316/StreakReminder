@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">StreakReminder</string>
+    <string name="last_streak">Last Snap:</string>
+    <string name="snap_now">Open Snapchat</string>
+    <string name="sometime_before">Snap Sent at ...</string>
+    <string name="just_now">Snap Sent</string>
+</resources>
