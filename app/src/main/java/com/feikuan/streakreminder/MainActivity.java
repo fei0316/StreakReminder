@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.SharedPreferences;
@@ -112,5 +114,8 @@ public class MainActivity extends AppCompatActivity {
         if (launchIntent != null) {
             startActivity(launchIntent);//null pointer check in case package name was not found
         }
+            /*else {
+                Snackbar.make(findViewById(android.R.id.content), "Snapchat not installed", Snackbar.LENGTH_SHORT).show;
+            }*/
+        }
     }
-}
