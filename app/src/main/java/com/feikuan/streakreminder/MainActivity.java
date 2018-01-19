@@ -4,6 +4,10 @@ package com.feikuan.streakreminder;
 //import android.app.Notification;
 //import android.app.PendingIntent;
 //import android.content.Context;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 //import android.graphics.Color;
 //import android.os.SystemClock;
@@ -88,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         lastSnapTime.setText(showTime);
-
 //       scheduleNotification();
 
     }
@@ -113,15 +116,35 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = pref.edit();
         editor.putLong("lastsnaptime", saveLongTime);
         editor.apply();
+        scheduleNotif();
         LoadConfig();
     }
 
     public void LaunchSnap(View v) {
         Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getString(R.string.snapchat_package));
         if (launchIntent != null) {
-            startActivity(launchIntent);//null pointer check in case package name was not found
+            startActivity(launchIntent);
+            Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+            PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+            AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+            am.cancel(pi);
         } else {
             Snackbar.make(v, R.string.not_installed, Snackbar.LENGTH_SHORT).show();
         }
     }
+
+    /*
+    * WIP attempt for snap notification: currently by pressing sent it sets a one-minute timer and sends toast every
+    * one minute. Use open snapchat button to stop
+    * work needed: notification with action button, time planning for notification (how often)
+    * */
+
+    public void scheduleNotif () {
+        long trigger_time = System.currentTimeMillis() + 10000;
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, trigger_time, 10000, pi);
+    }
+
 }
