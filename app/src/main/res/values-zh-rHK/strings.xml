@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StreakReminder</string>
+    <string name="last_streak">上一個 Snap:</string>
+    <string name="snap_now">開啓 Snapchat</string>
+    <string name="just_now">剛剛已傳送 Snap</string>
+    <string name="sometime_before">之前傳送的 Snap</string>
+    <string name="not_installed">無安裝 Snapchat</string>
+    <string name="long_ago">好耐以前…</string>
+    <string name="corrupted_data">錯誤！檢查時間</string>
+</resources>

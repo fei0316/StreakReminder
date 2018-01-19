@@ -2,6 +2,10 @@
     <string name="app_name">StreakReminder</string>
     <string name="last_streak">Last Snap:</string>
     <string name="snap_now">Open Snapchat</string>
-    <string name="sometime_before">Snap Sent at ...</string>
+    <string name="sometime_before">Snap Sent at …</string>
     <string name="just_now">Snap Sent</string>
+    <string name="not_installed">Snapchat not installed</string>
+    <string name="snapchat_package" translatable="false">com.snapchat.android</string>
+    <string name="long_ago">Long ago…</string>
+    <string name="corrupted_data">Error! Check system time</string>
 </resources>
