@@ -11,4 +11,5 @@
     <string name="id" translatable="false">snap_remind</string>
     <string name="notif_title">Time to Streak!</string>
     <string name="notif_body">Losing Streak in %1$s hours!</string>
+    <string name="open_streakremind">Open App</string>
 </resources>

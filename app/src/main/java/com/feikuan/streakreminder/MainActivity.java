@@ -161,13 +161,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void SendNotification () {
         String lastSnap = "test";
+        Intent openAppInt = new Intent(getPackageManager().getLaunchIntentForPackage(getString(R.string.snapchat_package)));
+        Intent openReminderInt = new Intent(this, MainActivity.class);
+        PendingIntent openApp = PendingIntent.getActivity(this, 0, openAppInt, 0);
+        PendingIntent openReminderApp = PendingIntent.getActivity(this, 0, openReminderInt, 0);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, getResources().getString(R.string.id))
-                        .setSmallIcon(R.drawable.ic_launcher_background)
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentTitle(getResources().getString(R.string.notif_title))
                         .setContentText(
                                 String.format(getResources().getString(R.string.notif_body),
-                                        lastSnap));
+                                        lastSnap))
+                        .setContentIntent(openApp);
+        mBuilder.addAction(R.drawable.ic_launcher_foreground, "open", openReminderApp);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
