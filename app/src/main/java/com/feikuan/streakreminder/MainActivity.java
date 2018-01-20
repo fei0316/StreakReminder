@@ -5,6 +5,7 @@ package com.feikuan.streakreminder;
 //import android.app.PendingIntent;
 //import android.content.Context;
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +15,8 @@ import android.content.Intent;
 import android.preference.PreferenceManager;
 //import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.SharedPreferences;
@@ -41,6 +44,15 @@ public class MainActivity extends AppCompatActivity {
                 LaunchSnap(v);
             }
         });
+
+        Button testNotif = findViewById(R.id.button4);
+        testNotif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SendNotification();
+            }
+        });
+
         LoadConfig();
     }
 
@@ -127,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
             PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
             AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
-            am.cancel(pi);
+            am.cancel(pi); //should be removed soonTM
         } else {
             Snackbar.make(v, R.string.not_installed, Snackbar.LENGTH_SHORT).show();
         }
@@ -145,6 +157,21 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
         am.setRepeating(AlarmManager.RTC_WAKEUP, trigger_time, 10000, pi);
+    }
+
+    public void SendNotification () {
+        String lastSnap = "test";
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this, getResources().getString(R.string.id))
+                        .setSmallIcon(R.drawable.ic_launcher_background)
+                        .setContentTitle(getResources().getString(R.string.notif_title))
+                        .setContentText(
+                                String.format(getResources().getString(R.string.notif_body),
+                                        lastSnap));
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(1, mBuilder.build());
     }
 
 }

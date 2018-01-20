@@ -10,8 +10,14 @@ import android.widget.Toast;
  */
 
 public class AlarmReceiver extends BroadcastReceiver {
+    int count = 0;
         @Override
         public void onReceive(Context context, Intent intent) {
             Toast.makeText(context, "ALARM!! ALARM!!", Toast.LENGTH_SHORT).show();
         }
+        public void cancelCounter() {
+            count++;
+
+        }
+
 }

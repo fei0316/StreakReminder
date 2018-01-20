@@ -8,4 +8,7 @@
     <string name="snapchat_package" translatable="false">com.snapchat.android</string>
     <string name="long_ago">Long ago…</string>
     <string name="corrupted_data">Error! Check system time</string>
+    <string name="id" translatable="false">snap_remind</string>
+    <string name="notif_title">Time to Streak!</string>
+    <string name="notif_body">Losing Streak in %1$s hours!</string>
 </resources>
