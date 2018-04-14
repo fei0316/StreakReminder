@@ -10,11 +10,13 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 //import android.graphics.Color;
 //import android.os.SystemClock;
+import android.os.Build;
 import android.preference.PreferenceManager;
 //import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
@@ -50,10 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
         Button testNotif = findViewById(R.id.button4);
         testNotif.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                SendNotification();
-            }
+            createNotif();
+        }
         });
 
         LoadConfig();
@@ -107,23 +108,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         lastSnapTime.setText(showTime);
-//       scheduleNotification();
 
     }
-
-/*    private void scheduleNotification(Notification notification, int delay) {
-
-        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }*/
-
-//      inconplete implementation of notification
 
     public void SaveTime() {
         long saveLongTime = System.currentTimeMillis();
@@ -131,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = pref.edit();
         editor.putLong("lastsnaptime", saveLongTime);
         editor.apply();
-        NotificationSet();
         LoadConfig();
     }
 
@@ -144,6 +129,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void createNotif() {
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this, "1")
+                .setSmallIcon(R.drawable.ic_stat_name)
+                .setContentTitle("text")
+                .setContentText("test")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel, but only on API 26+ because
+            // the NotificationChannel class is new and not in the support library
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("1", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system
+            notificationManager.createNotificationChannel(channel);
+        }
+        notificationManager.notify(1, nBuilder.build());
+
+    }
+
     /*
     * WIP attempt for snap notification: currently by pressing sent it sets a one-minute timer and sends toast every
     * one minute. Use open snapchat button to stop
@@ -151,39 +165,17 @@ public class MainActivity extends AppCompatActivity {
     * */
 
     public void NotificationSet() {
-        long trigger_time = System.currentTimeMillis() + 396; //should be 39600000, just for test here
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(1);
+        // canceling notification only works in Activity not directly in notification
+        long trigger_time = System.currentTimeMillis() + 39600000;
         Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, trigger_time, pi);
     }
 
-    public void SendNotification () {
-        String lastSnap = "test";
-        Intent openSnapInt = new Intent(getPackageManager().getLaunchIntentForPackage(getString(R.string.snapchat_package)));
-        Intent openReminderInt = new Intent(this, MainActivity.class);
-        Intent alreadySentInt = new Intent(this, ResetService.class)
-                .setAction("sent");
-        PendingIntent openSnap = PendingIntent.getActivity(this, 0, openSnapInt, 0);
-        PendingIntent openReminderApp = PendingIntent.getActivity(this, 0, openReminderInt, 0);
-        PendingIntent alreadySent = PendingIntent.getService(this, 0, alreadySentInt, PendingIntent.FLAG_ONE_SHOT);
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this, getResources().getString(R.string.id))
-                        .setSmallIcon(R.drawable.ic_stat_name)
-                        .setContentTitle(getResources().getString(R.string.notif_title))
-                        .setContentText(
-                                String.format(getResources().getString(R.string.notif_body),
-                                        lastSnap))
-                        .setOngoing(true)
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setContentIntent(openReminderApp);
-        mBuilder.addAction(R.drawable.ic_stat_name, getResources().getString(R.string.open_snap), openSnap);
-        mBuilder.addAction(R.drawable.ic_stat_name, getResources().getString(R.string.just_now), alreadySent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mNotificationManager.notify(1, mBuilder.build());
-    }
 
     public class ResetService extends IntentService {
         public ResetService() {
@@ -199,21 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putLong("lastsnaptime", saveLongTime);
                 editor.apply();
                 MainActivity.this.NotificationSet();
-                NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-                manager.cancel(1);
             }
-
-    /*
-    public void onCreate (Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        long saveLongTime = System.currentTimeMillis();
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putLong("lastsnaptime", saveLongTime);
-        editor.apply();
-        //scheduleNotif();
-*/
-
         }
     }
 }

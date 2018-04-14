@@ -12,4 +12,6 @@
     <string name="notif_title">Time to Streak!</string>
     <string name="notif_body">Losing Streak in %1$s hours!</string>
     <string name="open_snap">Open Snapchat</string>
+    <string name="channel_name">Snap Reminder</string>
+    <string name="channel_description">Reminds you to send a snap</string>
 </resources>
