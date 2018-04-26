@@ -74,8 +74,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
-        android:text="Button"
+        android:text="Notif"
         app:layout_constraintTop_toBottomOf="@+id/button3"
+        tools:layout_editor_absoluteX="161dp" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Cancelnotif"
+        app:layout_constraintTop_toBottomOf="@+id/button4"
         tools:layout_editor_absoluteX="161dp" />
 
 </android.support.constraint.ConstraintLayout>

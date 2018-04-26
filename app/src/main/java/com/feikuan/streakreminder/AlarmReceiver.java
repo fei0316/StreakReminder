@@ -10,10 +10,11 @@ import android.widget.Toast;
  */
 
 public class AlarmReceiver extends BroadcastReceiver {
-    int count = 0;
         @Override
         public void onReceive(Context context, Intent intent) {
             Toast.makeText(context, "ALARM!! ALARM!!", Toast.LENGTH_SHORT).show();
+            Intent makeNotif = new Intent(context, MakeNotification.class);
+            context.startService(makeNotif);
         }
         //don't think can call notification setter from here
 }

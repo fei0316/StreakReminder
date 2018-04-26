@@ -28,6 +28,8 @@ public class resetService extends IntentService {
             String s = Context.NOTIFICATION_SERVICE;
             NotificationManager mNM = (NotificationManager) this.getSystemService(s);
             mNM.cancel(1);
+            Intent setAlarm = new Intent(this, NotificationServiceSet.class);
+            startService(setAlarm);
         }
         else {
             throw new IllegalArgumentException("Unsupported action: " + action);

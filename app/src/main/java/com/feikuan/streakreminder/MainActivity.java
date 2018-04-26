@@ -63,6 +63,12 @@ public class MainActivity extends AppCompatActivity {
                 PickTime();
             }
         });
+        Button cancelAlarm = findViewById(R.id.button5);
+        cancelAlarm.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                cancelNotifAlarm();
+            }
+        });
 
         LoadConfig();
     }
@@ -126,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         LoadConfig();
         cancelNotification();
+        NotificationTimerSet();
     }
 
     public void LaunchSnap(View v) {
@@ -142,14 +149,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createNotif() {
+        Intent makeNotif = new Intent(this, MakeNotification.class);
+        startService(makeNotif);
+//      PendingIntent pendingNotif = PendingIntent.getService(this, 111, MakeNotification, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent openApp = new Intent(this, MainActivity.class);
+
+  /*      Intent openApp = new Intent(this, MainActivity.class);
         Intent openSnap = getPackageManager().getLaunchIntentForPackage(getString(R.string.snapchat_package));
-        Intent resetTime = new Intent(this, resetService.class); //has no zero argument constructor
-        openSnap.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent resetTime = new Intent(this, resetService.class);
         resetTime.setAction(resetService.ACTION1);
         PendingIntent pendingApp = PendingIntent.getActivity(this, 0, openApp, 0);
-        PendingIntent pendingSnap = PendingIntent.getActivity(this, 0, openSnap, 0);
         PendingIntent pendingReset = PendingIntent.getService(this, 154, resetTime, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this, "1")
@@ -159,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setOngoing(true)
                 .setContentIntent(pendingApp)
-                .addAction(R.drawable.ic_stat_name, getString(R.string.open_snap), pendingSnap)
                 .addAction(R.drawable.ic_stat_name, getString(R.string.just_now), pendingReset);
         NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -173,8 +181,13 @@ public class MainActivity extends AppCompatActivity {
             channel.setDescription(description);
             notificationManager.createNotificationChannel(channel);
         }
-        notificationManager.notify(1, nBuilder.build());
 
+        if (openSnap != null) {
+            openSnap.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent pendingSnap = PendingIntent.getActivity(this, 0, openSnap, 0);
+            nBuilder.addAction(R.drawable.ic_stat_name, getString(R.string.open_snap), pendingSnap);
+        }
+        notificationManager.notify(1, nBuilder.build());*/
     }
 
     /*
@@ -183,15 +196,25 @@ public class MainActivity extends AppCompatActivity {
     * work needed: notification with action button, time planning for notification (how often)
     * */
 
-    public void NotificationSet() {
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    public void NotificationTimerSet() {
+        Intent setAlarm = new Intent(this, NotificationServiceSet.class);
+        startService(setAlarm);
+
+/*        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(1);
         // canceling notification only works in Activity not directly in notification
-        long trigger_time = System.currentTimeMillis() + 39600000;
+        long trigger_time = System.currentTimeMillis() + 20000; //396000000
         Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
         AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
-        am.set(AlarmManager.RTC_WAKEUP, trigger_time, pi);
+        am.set(AlarmManager.RTC_WAKEUP, trigger_time, pi);*/
+    }
+
+    public void cancelNotifAlarm() {
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+        am.cancel(pi);
     }
 
     public void cancelNotification() {
